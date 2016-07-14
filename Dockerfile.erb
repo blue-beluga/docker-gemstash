@@ -1,0 +1,27 @@
+# encoding: UTF-8
+
+FROM <%= ENV.fetch('FROM') %>
+MAINTAINER The Blue Beluga <admin@bluebeluga.io>
+
+LABEL name="gemstash"
+LABEL description="Alpine Linux Base with Gemstash"
+LABEL version="latest"
+LABEL git_revision="<%= ENV.fetch('GIT_REVISION') %>"
+
+RUN addgroup -S gemstash && \
+    adduser gemstash -D -S -G gemstash -g 'Gemstash User' && \
+    apk-install --virtual build-dependencies build-base sqlite-dev && \
+    gem install gemstash && \
+    apk del build-dependencies build-base && \
+    rm -rf /var/cache/apk/*
+
+COPY files/config.yml /
+
+EXPOSE 9192
+
+VOLUME ["/gemstash"]
+
+RUN chown -R gemstash:gemstash /gemstash
+USER gemstash
+
+CMD ["gemstash", "start", "--no-daemonize", "--config-file", "/config.yml"]

@@ -9,12 +9,13 @@ LABEL io.bluebeluga.gemstash.version="<%= ENV.fetch('TAG') %>"
 LABEL io.bluebeluga.gemstash.git-revision="<%= ENV.fetch('GIT_REVISION') %>"
 LABEL io.bluebeluga.gemstash.release-date="<%= Time.now.strftime('%B %d, %Y %H:%M') %>"
 
-RUN addgroup -S gemstash && \
-    adduser gemstash -D -S -G gemstash -g 'Gemstash User' && \
-    apk-install --virtual build-dependencies build-base sqlite-dev && \
-    gem install gemstash && \
-    apk del build-dependencies build-base && \
-    rm -rf /var/cache/apk/*
+RUN addgroup -S gemstash \
+ && adduser gemstash -D -S -G gemstash -g 'Gemstash User' \
+ && apk-install --virtual build-dependencies build-base sqlite-dev ruby-dev \
+    openssl-dev \
+ && gem install gemstash \
+ && apk del build-dependencies build-base \
+ && rm -rf /var/cache/apk/*
 
 COPY files/config.yml /
 

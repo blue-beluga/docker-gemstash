@@ -1,5 +1,6 @@
+# encoding: UTF-8
 ---
-:base_path: "/var/gemstash"
+:base_path: /var/gemstash
 :cache_type: memory
 :db_adapter: sqlite3
 :db_url:
